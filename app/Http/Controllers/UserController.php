@@ -47,7 +47,8 @@ class UserController extends Controller
             'firstname' => 'required',
             'lastname' => 'required',
             'password' => 'required',
-            'email' => 'required|email|unique:users'
+            'email' => 'required|email|unique:users',
+            'profile_pic' => 'required'
 
         ]);
         $response = [];
@@ -62,8 +63,12 @@ class UserController extends Controller
                 //save
                 $data = $request->all();
                 $data["password"] = Hash::make($data["password"]);
-                $user = User::create($data);
 
+                $fileName = time().$request->file('profile_pic')->getClientOriginalName();
+                $path = $request->file('profile_pic')->storeAs('images', $fileName, 'public');
+                $data["profile_pic"] = '/storage/'.$path;
+
+                $user = User::create($data);
                 $response["last_inserted_id"] = $user->id;
                 $response["code"] = 200;
                 DB::commit();
