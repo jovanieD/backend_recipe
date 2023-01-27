@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\RecipeResource;
 use App\Models\Recipe;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -101,6 +102,10 @@ class RecipeController extends Controller
             try {
                 //save
                 $data = $request->all();
+                $fileName = time().$request->file('img_url')->getClientOriginalName();
+                $path = $request->file('img_url')->storeAs('images', $fileName, 'public');
+                $data["img_url"] = '/storage/'.$path;
+                $data['user_id'] = Auth::user()->id;
                 $recipe = Recipe::create($data);
                 DB::commit();
                 $response["last_inserted_id"] = $recipe->id;
