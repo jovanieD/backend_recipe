@@ -23,13 +23,9 @@ class RecipeController extends Controller
 
         try {
             $response = [];
-            $free = Recipe::where('status', '=', 'free')->get();
             $sale = Recipe::where('status', '=', 'sale')->get();
             $data = RecipeResource::collection($sale);
-
-            $r = array($free, $sale);
-
-            return response($r);
+            return response($sale);
 
         } catch (\Exception $e) {
             return response()->json($e);
@@ -37,19 +33,17 @@ class RecipeController extends Controller
     }
 
 
-    // public function sale()
-    // {
+    public function free()
+    {
 
-    //     try {
-    //         $sale = Recipe::where('status', '=', 'sale')->get();
-    //         $data = RecipeResource::collection($sale);
+        try {
+            $free = Recipe::where('status', '=', 'free')->get();
+            return response()->json($free);
 
-    //         return response()->json($data);
-
-    //     } catch (\Exception $e) {
-    //         return response()->json($e);
-    //     }
-    // }
+        } catch (\Exception $e) {
+            return response()->json($e);
+        }
+    }
 
     public function searchById($id)
     {
@@ -74,6 +68,11 @@ class RecipeController extends Controller
 
     }
 
+    public function searchbyCategory($cat){
+        $recipe = Recipe::where('category', 'like', "%{$cat}%")->get();
+        return $recipe;
+    }
+
     public function store(Request $request)
     {
         //validation
@@ -85,7 +84,7 @@ class RecipeController extends Controller
             'img_url' => 'required',
             'ingredients' => 'required',
             'procedures' => 'required',
-            'user_id' => 'required',
+            // 'user_id' => 'required',
             'status' => 'required'
 
         ]);
@@ -105,7 +104,7 @@ class RecipeController extends Controller
                 $fileName = time().$request->file('img_url')->getClientOriginalName();
                 $path = $request->file('img_url')->storeAs('images', $fileName, 'public');
                 $data["img_url"] = '/storage/'.$path;
-                $data['user_id'] = Auth::user()->id;
+                // $data['user_id'] = Auth::user()->id;
                 $recipe = Recipe::create($data);
                 DB::commit();
                 $response["last_inserted_id"] = $recipe->id;

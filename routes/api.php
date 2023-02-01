@@ -5,6 +5,7 @@ use App\Http\Controllers\PaypalController;
 use App\Http\Controllers\PurchasedRecipeController;
 use App\Http\Controllers\RecipeController;
 use App\Http\Controllers\UserController;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -27,16 +28,27 @@ Route::post('/login', [UserController::class, 'login']);
 
 Route::post('/register', [UserController::class, 'store']);
 
-Route::get('/home', [RecipeController::class, 'index']);
+Route::get('/sale', [RecipeController::class, 'index']);
+
+Route::get('/free', [RecipeController::class, 'free']);
+
+Route::post('/recipes', [RecipeController::class, 'store']);
 
 Route::middleware('auth:sanctum')->group(function () {
+
+    Route::get('/users/{id}', [UserController::class, 'authuser']);
 
     Route::get('/home', [RecipeController::class, 'index']); //this is for all recipes available
 
     Route::get('/search/{id}', [RecipeController::class, "searchById"]);
+
     Route::get('/search/tag/{tag}', [RecipeController::class, "searchbyTag"]);
 
-    Route::post('/recipes', [RecipeController::class, 'store']);
+    Route::get('/search/category/{cat}', [RecipeController::class, "searchbyCategory"]);
+
+    // Route::get('/search/{tag}', [RecipeController::class, "searchbyTag"]);
+
+
     Route::put('/recipes/{id}', [RecipeController::class, 'update']);
     Route::delete('/recipes/{id}', [RecipeController::class, 'destroy']);
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -21,12 +22,24 @@ class UserController extends Controller
 
         $token = $user->createToken('my_app_token')->plainTextToken;
 
+
         $response = [
             'user' => $user,
             'token' => $token
         ];
 
-        return response($response, 201);
+        return ($response);
+    }
+
+    public function authuser($id){
+        $user = User::whereRaw('id = '.$id.'' )->get();
+
+        $response = [
+            'user' => $user
+        ];
+        return response($response);
+
+
     }
 
     //this is for log out

@@ -20,7 +20,7 @@ class CreateRecipesTable extends Migration
             $table->text('ingredients');
             $table->text('procedures');
             $table->text('tag');
-            $table->enum('category',['desert','soup','breakfast', 'lunch', 'dinner']);
+            $table->enum('category',['breakfast', 'lunch', 'dinner']);
             $table->Integer('price')->nullable();
             $table->string('video_url')->nullable();
             $table->string('img_url');
